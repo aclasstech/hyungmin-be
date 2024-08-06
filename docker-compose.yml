@@ -1,0 +1,101 @@
+services:
+  hyungmin_db:
+    image: mongo:latest
+    container_name: "hyungmin_db"
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGODB_DATABASE}
+    ports:
+      - "${MONGODB_PORT}:27017"
+    volumes:
+      - "mongodb_data:/data/db"
+    networks:
+      - hyungmin_network
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--username",
+          "${MONGODB_USERNAME}",
+          "--password",
+          "${MONGODB_PASSWORD}",
+          "--authenticationDatabase",
+          "admin",
+          "--eval",
+          "db.adminCommand('ping')",
+          "--quiet",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  hyungmin_adminer:
+    image: mongo-express:latest
+    container_name: "mongo_express"
+    ports:
+      - "8082:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=hyungmin_db
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGODB_USERNAME}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGODB_PASSWORD}
+      - ME_CONFIG_BASICAUTH_USERNAME=${MONGODB_USERNAME}
+      - ME_CONFIG_BASICAUTH_PASSWORD=${MONGODB_PASSWORD}
+    networks:
+      - hyungmin_network
+    depends_on:
+      hyungmin_db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  hyungmin_redis:
+    image: "redis:latest"
+    command: >
+      --requirepass ${REDIS_PASSWORD}
+    container_name: "hyungmin_redis"
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - "redis_data:/data"
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DB=${REDIS_DB}
+      - REDIS_IO_THREADS=4
+      - REDIS_IO_THREADS_DO_READS=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    networks:
+      - hyungmin_network
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: "hyungmin_redis_commander"
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOSTS=local:${REDIS_HOST}
+      - HTTP_USER=${REDIS_USERNAME}
+      - HTTP_PASSWORD=${REDIS_PASSWORD}
+    ports:
+      - "8083:8083"
+    networks:
+      - hyungmin_network
+    depends_on:
+      - hyungmin_redis
+
+volumes:
+  mongodb_data:
+  redis_data:
+
+networks:
+  hyungmin_network:
+    name: hyungmin_network
+    driver: bridge

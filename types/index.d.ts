@@ -1,0 +1,1 @@
+type TermType = 'main' | 'book' | 'interview' | 'result' | 'pay'
