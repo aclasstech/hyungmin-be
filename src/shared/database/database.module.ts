@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { DataSource, LoggerOptions } from "typeorm";
+import { LoggerOptions } from "typeorm";
 import { EntityExistConstraint } from "./constraints/entity-exist.constraint";
 import { UniqueConstraint } from "./constraints/unique.constraint";
 import { TypeORMLogger } from "./typeorm-logger";
@@ -14,23 +14,31 @@ const providers = [EntityExistConstraint, UniqueConstraint];
   imports: [
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService<ConfigKeyPaths>) => {
+      useFactory: async (configService: ConfigService<ConfigKeyPaths>) => {
         let loggerOptions: LoggerOptions = env("MONGODB_LOGGING") as "all";
 
-        try {
-          loggerOptions = JSON.parse(loggerOptions);
-        } catch {}
+        if (typeof loggerOptions === 'string') {
+          try {
+            loggerOptions = JSON.parse(loggerOptions);
+          } catch (error) {
+            console.error("Error parsing loggerOptions JSON:", error);
+            loggerOptions = "all"; 
+          }
+        }
 
+        const databaseConfig = configService.get<IDatabaseConfig>("database");
+        if (!databaseConfig) {
+          throw new Error("Database configuration not found");
+        }
+
+        console.log("databaseConfig", databaseConfig)
+        
         return {
-          ...configService.get<IDatabaseConfig>("database"),
+          ...databaseConfig,
           autoLoadEntities: true,
           logging: loggerOptions,
           logger: new TypeORMLogger(loggerOptions),
         };
-      },
-      dataSourceFactory: async (options) => {
-        const dataSource = await new DataSource(options).initialize();
-        return dataSource;
       },
     }),
   ],

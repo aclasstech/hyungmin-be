@@ -3,7 +3,7 @@ import { Column, Entity } from "typeorm";
 import { CommonEntity } from "~/common/entity/common.entity";
 
 
-@Entity({ name: "admission" })
+@Entity({ name: "admissions" })
 export class AdmissionEntity extends CommonEntity {
   @ApiProperty({ nullable: true, description: "Tên kỳ" })
   @Column({ nullable: true })

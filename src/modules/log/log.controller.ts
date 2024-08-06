@@ -14,10 +14,6 @@ import { RolesGuard } from "../auth/guard/roles.guard";
 import { Roles } from "~/common/decorators/custom.decorator";
 import { ROLE } from "~/constants/enum.constant";
 
-// export const permissions = definePermission("system:log", {
-//   LogList: "login:list",
-// } as const);
-
 @ApiSecurityAuth()
 @ApiTags("Logging")
 @Controller("log")
@@ -26,7 +22,7 @@ export class LogController {
 
   @Public()
   @UseGuards(AuthenticationGuard, RolesGuard)
-  @Roles(ROLE.TECHNICIAN)
+  @Roles(ROLE.ADMIN)
   @Get("login/list")
   @ApiOperation({ summary: "Lấy danh sách người truy cập" })
   @ApiResult({ type: [LoginLogInfo], isPage: true })

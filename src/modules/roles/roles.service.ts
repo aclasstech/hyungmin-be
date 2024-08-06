@@ -48,33 +48,12 @@ export class RolesService extends BaseAbstractService<RoleEntity> {
     return existedRole;
   }
 
-  async findOneRoleByName(name: string): Promise<RoleEntity> {
-    const existedRole = await this.findByCondition({
-      where: { name: name, status: STATUS.ENABLE },
-    });
-    if (!existedRole) {
-      throw new BusinessException(ErrorEnum.ROLE_NOT_FOUND);
-    }
-    return existedRole;
-  }
-
   async updateRoleById(id: string, updateRoleDto: UpdateRoleDto): Promise<any> {
     const existedRole = await this.findOne({ where: { id: id } });
     if (isEmpty(existedRole)) {
       throw new BusinessException(ErrorEnum.ROLE_NOT_FOUND);
     }
     return await this.updateById(id, updateRoleDto);
-  }
-
-  async updateRoleByName(
-    name: string,
-    updateRoleDto: UpdateRoleDto
-  ): Promise<any> {
-    const existedRole = await this.findOne({ where: { name: name } });
-    if (isEmpty(existedRole)) {
-      throw new BusinessException(ErrorEnum.ROLE_NOT_FOUND);
-    }
-    return await this.updateByOption(existedRole.id, updateRoleDto);
   }
 
   async deleteRoleById(id: string): Promise<any> {
@@ -85,32 +64,11 @@ export class RolesService extends BaseAbstractService<RoleEntity> {
     return await this.deleteById(id, { status: STATUS.DELETED });
   }
 
-  async deleteRoleByName(name: string): Promise<any> {
-    const existedRole = await this.findOne({ where: { name: name } });
-    if (isEmpty(existedRole)) {
-      throw new BusinessException(ErrorEnum.ROLE_NOT_FOUND);
-    }
-
-    return await this.deleteByOption(existedRole.id, {
-      status: STATUS.DELETED,
-    });
-  }
-
   async restoreRoleById(id: string): Promise<any> {
     const deletedRole = await this.findOne({ where: { id: id } });
     if (isEmpty(deletedRole)) {
       throw new BusinessException(ErrorEnum.ROLE_NOT_FOUND);
     }
     return await this.restoreById(id, { status: STATUS.ENABLE });
-  }
-
-  async restoreRoleByName(name: string): Promise<any> {
-    const deletedRole = await this.findOne({ where: { name: name } });
-    if (isEmpty(deletedRole)) {
-      throw new BusinessException(ErrorEnum.ROLE_NOT_FOUND);
-    }
-    return await this.restoreByOption(deletedRole.id, {
-      status: STATUS.ENABLE,
-    });
   }
 }

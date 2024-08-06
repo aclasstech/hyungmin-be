@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { AdmissionEntity } from './entities/admission.entity';
 import { CreateAdmissionDto } from './dto/admission.dto';
+import { AdmissionRepositoryInterface } from './interfaces/admission.interface';
 
 @Injectable()
 export class AdmissionService {
   constructor(
     @InjectRepository(AdmissionEntity)
-    private readonly admissionRepository: Repository<AdmissionEntity>,
+    private readonly admissionRepository: AdmissionRepositoryInterface,
   ) {}
 
   async create(createAdmissionDto: CreateAdmissionDto): Promise<AdmissionEntity> {
-    const admission = this.admissionRepository.create(createAdmissionDto);
-    return this.admissionRepository.save(admission);
+    const admission = await this.admissionRepository.create(createAdmissionDto);
+    return await this.admissionRepository.save(admission);
   }
 }

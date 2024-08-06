@@ -1,12 +1,7 @@
 export enum ROLE {
   ADMIN = "admin",
-  MANAGER = "manager",
-  TECHNICIAN = "technician",
-  RECEPTIONIST = "receptionist",
-  TEACHER = "teacher",
-  ASSISTANT = "assistant",
   STUDENT = "student",
-  PARENT = "parent",
+  GUEST = "guest"
 }
 
 export enum STATUS {

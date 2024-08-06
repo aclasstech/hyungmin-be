@@ -30,16 +30,9 @@ import { AuthenticationGuard } from "../auth/guard/authentication.guard";
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
-  /**
-   *
-   * @api Tạo role
-   * @guard Chỉ khi đăng nhập và có role là kỹ thuật viên mới có quyền truy cập
-   * @public Public: Decorator cho phép truy cập mà không cần đăng nhập
-   * @returns role details
-   */
   @Public()
   @UseGuards(AuthenticationGuard, RolesGuard)
-  @Roles(ROLE.TECHNICIAN)
+  @Roles(ROLE.ADMIN)
   @SerializeOptions({ groups: [GROUP_ROLE] })
   @ApiResult({ type: [RoleEntity], isPage: true })
   @Post()
@@ -47,16 +40,9 @@ export class RolesController {
     return this.rolesService.createRole(createRoleDto);
   }
 
-  /**
-   *
-   * @api Truy vấn tất cả roles
-   * @guard Chỉ khi đăng nhập và có role là kỹ thuật viên mới có quyền truy cập
-   * @public Public: Decorator cho phép truy cập mà không cần đăng nhập
-   * @returns tất cả role details
-   */
   @Public()
   @UseGuards(AuthenticationGuard, RolesGuard)
-  @Roles(ROLE.TECHNICIAN)
+  @Roles(ROLE.ADMIN)
   @SerializeOptions({ groups: [GROUP_ROLE] })
   @ApiResult({ type: [RoleEntity], isPage: true })
   @Get()
@@ -64,142 +50,44 @@ export class RolesController {
     return this.rolesService.findAllRole(offset, limit);
   }
 
-  /**
-   *
-   * @api Truy vấn 1 role bằng id
-   * @guard Chỉ khi đăng nhập và có role là kỹ thuật viên mới có quyền truy cập
-   * @public Public: Decorator cho phép truy cập mà không cần đăng nhập
-   * @returns role details
-   */
   @Public()
   @UseGuards(AuthenticationGuard, RolesGuard)
-  @Roles(ROLE.TECHNICIAN)
+  @Roles(ROLE.ADMIN)
   @SerializeOptions({ groups: [GROUP_ROLE] })
   @ApiResult({ type: [RoleEntity], isPage: true })
-  @Get("/by-id/:id")
+  @Get("/:id")
   findOneById(@Param("id") id: string) {
     return this.rolesService.findOneRoleById(id);
   }
+  
 
-  /**
-   *
-   * @api Truy vấn 1 role bằng tên
-   * @guard Chỉ khi đăng nhập và có role là kỹ thuật viên mới có quyền truy cập
-   * @public Public: Decorator cho phép truy cập mà không cần đăng nhập
-   * @returns role details
-   */
   @Public()
   @UseGuards(AuthenticationGuard, RolesGuard)
-  @Roles(ROLE.TECHNICIAN)
+  @Roles(ROLE.ADMIN)
   @SerializeOptions({ groups: [GROUP_ROLE] })
   @ApiResult({ type: [RoleEntity], isPage: true })
-  @Get("/by-name/:name")
-  findOneByName(@Param("name") name: string) {
-    return this.rolesService.findOneRoleByName(name);
-  }
-
-  /**
-   *
-   * @api Cập nhật role bằng id
-   * @guard Chỉ khi đăng nhập và có role là kỹ thuật viên mới có quyền truy cập
-   * @public Public: Decorator cho phép truy cập mà không cần đăng nhập
-   * @returns
-   */
-  @Public()
-  @UseGuards(AuthenticationGuard, RolesGuard)
-  @Roles(ROLE.TECHNICIAN)
-  @SerializeOptions({ groups: [GROUP_ROLE] })
-  @ApiResult({ type: [RoleEntity], isPage: true })
-  @Put("/by-id/:id")
+  @Put("/:id")
   updateById(@Param("id") id: string, @Body() updateRoleDto: UpdateRoleDto) {
     return this.rolesService.updateRoleById(id, updateRoleDto);
   }
 
-  /**
-   *
-   * @api Cập nhật role bằng tên
-   * @guard Chỉ khi đăng nhập và có role là kỹ thuật viên mới có quyền truy cập
-   * @public Public: Decorator cho phép truy cập mà không cần đăng nhập
-   * @returns
-   */
   @Public()
   @UseGuards(AuthenticationGuard, RolesGuard)
-  @Roles(ROLE.TECHNICIAN)
+  @Roles(ROLE.ADMIN)
   @SerializeOptions({ groups: [GROUP_ROLE] })
   @ApiResult({ type: [RoleEntity], isPage: true })
-  @Put("/by-name/:name")
-  updateByName(
-    @Param("name") name: string,
-    @Body() updateRoleDto: UpdateRoleDto
-  ) {
-    return this.rolesService.updateRoleByName(name, updateRoleDto);
-  }
-
-  /**
-   *
-   * @api Xóa role bằng id
-   * @guard Chỉ khi đăng nhập và có role là kỹ thuật viên mới có quyền truy cập
-   * @public Public: Decorator cho phép truy cập mà không cần đăng nhập
-   * @returns
-   */
-  @Public()
-  @UseGuards(AuthenticationGuard, RolesGuard)
-  @Roles(ROLE.TECHNICIAN)
-  @SerializeOptions({ groups: [GROUP_ROLE] })
-  @ApiResult({ type: [RoleEntity], isPage: true })
-  @Delete("/by-id/:id")
+  @Delete("/:id")
   removeById(@Param("id") id: string) {
     return this.rolesService.deleteRoleById(id);
   }
 
-  /**
-   *
-   * @api Xóa role bằng tên
-   * @guard Chỉ khi đăng nhập và có role là kỹ thuật viên mới có quyền truy cập
-   * @public Public: Decorator cho phép truy cập mà không cần đăng nhập
-   * @returns
-   */
   @Public()
   @UseGuards(AuthenticationGuard, RolesGuard)
-  @Roles(ROLE.TECHNICIAN)
+  @Roles(ROLE.ADMIN)
   @SerializeOptions({ groups: [GROUP_ROLE] })
   @ApiResult({ type: [RoleEntity], isPage: true })
-  @Delete("/by-name/:name")
-  removeByName(@Param("name") name: string) {
-    return this.rolesService.deleteRoleByName(name);
-  }
-
-  /**
-   *
-   * @api Khôi phục role bằng id
-   * @guard Chỉ khi đăng nhập và có role là kỹ thuật viên mới có quyền truy cập
-   * @public Public: Decorator cho phép truy cập mà không cần đăng nhập
-   * @returns
-   */
-  @Public()
-  @UseGuards(AuthenticationGuard, RolesGuard)
-  @Roles(ROLE.TECHNICIAN)
-  @SerializeOptions({ groups: [GROUP_ROLE] })
-  @ApiResult({ type: [RoleEntity], isPage: true })
-  @Put("/restore/by-id/:id")
+  @Put("/restore/:id")
   restoreById(@Param("id") id: string) {
     return this.rolesService.restoreRoleById(id);
-  }
-
-  /**
-   *
-   * @api Khôi phục role bằng tên
-   * @guard Chỉ khi đăng nhập và có role là kỹ thuật viên mới có quyền truy cập
-   * @public Public: Decorator cho phép truy cập mà không cần đăng nhập
-   * @returns
-   */
-  @Public()
-  @UseGuards(AuthenticationGuard, RolesGuard)
-  @Roles(ROLE.TECHNICIAN)
-  @SerializeOptions({ groups: [GROUP_ROLE] })
-  @ApiResult({ type: [RoleEntity], isPage: true })
-  @Put("/restore/by-name/:name")
-  restoreByName(@Param("name") name: string) {
-    return this.rolesService.restoreRoleByName(name);
   }
 }

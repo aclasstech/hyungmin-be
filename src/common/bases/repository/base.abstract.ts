@@ -49,10 +49,6 @@ export abstract class BaseAbstractRepository<T extends HasId>
     return await this.entity.update(options, data);
   }
 
-  createQueryBuilder(alias: string): SelectQueryBuilder<T> {
-    return this.createQueryBuilder(alias);
-  }
-
   async count(options?: FindManyOptions<T>): Promise<number> {
     return this.entity.count(options);
   }

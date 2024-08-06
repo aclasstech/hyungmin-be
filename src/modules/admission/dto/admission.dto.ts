@@ -9,7 +9,6 @@ export class CreateAdmissionDto {
 
   @ApiProperty({ type: [Object], description: 'Danh sách kỳ' })
   terms: {
-    id: string;
     title: string;
     time: string;
     redirect: string;

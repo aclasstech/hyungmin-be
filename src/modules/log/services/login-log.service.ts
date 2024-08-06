@@ -1,15 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-
-import { Between, LessThan, Like, Repository } from "typeorm";
-
 import UAParser from "ua-parser-js";
-
-import { paginateRaw } from "~/helper/paginate";
-
 import { getIpAddress } from "~/utils/ip.util";
-
-import { LoginLogQueryDto } from "../dto/log.dto";
 import { LoginLogEntity } from "../entities/login-log.entity";
 import { LoginLogInfo } from "../models/log.model";
 import { BaseAbstractService } from "~/common/bases/service/base-service.abstract";
@@ -56,51 +48,4 @@ export class LoginLogService extends BaseAbstractService<LoginLogEntity> {
       console.error(e);
     }
   }
-
-  // async list({
-  //   page,
-  //   pageSize,
-  //   username,
-  //   ip,
-  //   address,
-  //   time,
-  // }: LoginLogQueryDto) {
-  //   const queryBuilder = await this.loginLogRepository
-  //     .createQueryBuilder("login_log")
-  //     .innerJoinAndSelect("login_log.user", "user")
-  //     .where({
-  //       ...(ip && { ip: Like(`%${ip}%`) }),
-  //       ...(address && { address: Like(`%${address}%`) }),
-  //       ...(time && { createdAt: Between(time[0], time[1]) }),
-  //       ...(username && {
-  //         user: {
-  //           username: Like(`%${username}%`),
-  //         },
-  //       }),
-  //     })
-  //     .orderBy("login_log.created_at", "DESC");
-
-  //   const { items, ...rest } = await paginateRaw<LoginLogEntity>(queryBuilder, {
-  //     page,
-  //     pageSize,
-  //   });
-
-  //   const parser = new UAParser();
-  //   const loginLogInfos = await Promise.all(
-  //     items.map((item) => parseLoginLog(item, parser))
-  //   );
-
-  //   return {
-  //     items: loginLogInfos,
-  //     ...rest,
-  //   };
-  // }
-
-  // async clearLog(): Promise<void> {
-  //   await this.loginLogRepository.clear();
-  // }
-
-  // async clearLogBeforeTime(time: Date): Promise<void> {
-  //   await this.loginLogRepository.delete({ createdAt: LessThan(time) });
-  // }
 }

@@ -1,4 +1,4 @@
-import { DeepPartial, FindManyOptions, FindOneOptions, SelectQueryBuilder } from "typeorm";
+import { DeepPartial, FindManyOptions, FindOneOptions } from "typeorm";
 
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
@@ -11,5 +11,4 @@ export interface BaseInterfaceRepository<T> {
   findOne(options: FindOneOptions<T>): Promise<T>;
   update(options: any, data: QueryDeepPartialEntity<T>): Promise<any>;
   count(options?: FindManyOptions<T>): Promise<number>;
-  createQueryBuilder(alias: string): SelectQueryBuilder<T>;
 }
