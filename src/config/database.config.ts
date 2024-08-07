@@ -1,9 +1,9 @@
 import * as dotenv from "dotenv";
 
 import { registerAs } from "@nestjs/config";
-import { env, envBoolean, envNumber } from "~/global/env";
+import { env, envNumber } from "~/global/env";
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+dotenv.config({ path: `.env` });
 
 const buildMongoUrl = (
   username: string | undefined,
@@ -32,9 +32,6 @@ const mongoUrl = buildMongoUrl(
 export const dbRegToken = "database";
 export const DatabaseConfig = registerAs(dbRegToken, () => ({
   uri: mongoUrl,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  synchronize: envBoolean("MONGODB_SYNCHRONIZE", false),
 }));
 
 export type IDatabaseConfig = ReturnType<typeof DatabaseConfig>;

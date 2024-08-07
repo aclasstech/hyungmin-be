@@ -1,21 +1,21 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { CommonSchema } from "~/common/entity/common.entity";
+import { Term } from "./term.schema";
+import { ApiProperty } from "@nestjs/swagger";
 
 @Schema()
-export class Admission {
+export class Admission extends CommonSchema {
+  @ApiProperty()
   @Prop({ required: false })
   name: string;
 
+  @ApiProperty()
   @Prop({ required: false })
   status: string;
 
-  @Prop()
-  terms: {
-    title: string;
-    time: string;
-    redirect: string;
-    titleRedirect: string;
-    type: TermType;
-  }[];
+  @ApiProperty({ type: [String] })
+  @Prop({ default: [] })
+  terms: Term[];
 }
 
 export const AdmissionSchema = SchemaFactory.createForClass(Admission);

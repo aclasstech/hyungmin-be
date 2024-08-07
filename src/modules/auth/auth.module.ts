@@ -6,13 +6,9 @@ import { GoogleAuthController } from "./google/google-auth.controller";
 import { GoogleAuthService } from "./google/google-auth.service";
 import { GoogleStrategy } from "./google/google.strategy";
 import { JwtModule } from "@nestjs/jwt";
-import { LogModule } from "../log/log.module";
-import { LoggerModule } from "../logger/logger.module";
-import { Module, forwardRef } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { PassportModule } from "@nestjs/passport";
 import { RefreshTokenStrategy } from "./strategies/jwt-refresh-token.strategy";
-import { RolesModule } from "../roles/roles.module";
-import { TypeOrmModule } from "@nestjs/typeorm";
 
 @Module({
   imports: [
@@ -23,9 +19,6 @@ import { TypeOrmModule } from "@nestjs/typeorm";
       session: false,
     }),
     ConfigModule.forRoot(),
-    LoggerModule,
-    RolesModule,
-    LogModule,
   ],
   controllers: [AuthController, GoogleAuthController],
   providers: [

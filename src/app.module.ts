@@ -3,19 +3,14 @@ import { ClassSerializerInterceptor, Module } from "@nestjs/common";
 import { ThrottlerModule, seconds } from "@nestjs/throttler";
 import { AllExceptionsFilter } from "./common/filters/any-exception.filter";
 import { AppService } from "./app.service";
-import { AuthModule } from "./modules/auth/auth.module";
 import { CommonModule } from "./common/common.module";
 import { ConfigModule } from "@nestjs/config";
 import { DatabaseModule } from "./shared/database/database.module";
 import { IdempotenceInterceptor } from "./common/interceptors/idempotence.interceptor";
-import { LogModule } from "./modules/log/log.module";
-import { LoggerModule } from "./modules/logger/logger.module";
-import { RolesModule } from "./modules/roles/roles.module";
 import { SharedModule } from "./shared/shared.module";
 import { TimeoutInterceptor } from "./common/interceptors/timeout.interceptor";
 import { TransformInterceptor } from "./common/interceptors/transform.interceptor";
 import config from "./config";
-import { FilesModule } from "./modules/files/files.module";
 import { AdmissionModule } from "./modules/admission/admission.module";
 
 @Module({
@@ -35,12 +30,7 @@ import { AdmissionModule } from "./modules/admission/admission.module";
     SharedModule,
     DatabaseModule,
     CommonModule,
-    // AuthModule,
-    // RolesModule,
-    // LoggerModule,
-    // LogModule,
-    // FilesModule,
-    AdmissionModule
+    AdmissionModule,
   ],
   providers: [
     AppService,

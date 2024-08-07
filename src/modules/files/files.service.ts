@@ -13,13 +13,13 @@ import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { dateTimeZone } from "src/common/decorators/date-time.decorator";
-import { BaseAbstractService } from "~/common/bases/service/base-service.abstract";
-import { FileRepositoryInterface } from "./interfaces/file.interface";
+import { FileRepositoryInterface } from "./repositories/file.repository";
 import { BusinessException } from "~/common/exceptions/biz.exception";
 import { File } from "./schemas/file.schema";
+import { BaseService } from "~/common/bases/base.service";
 
 @Injectable()
-export class FilesService extends BaseAbstractService<File> {
+export class FilesService extends BaseService<File> {
   private configS3: any;
   constructor(
     @InjectRepository(File)

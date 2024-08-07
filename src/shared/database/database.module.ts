@@ -12,11 +12,7 @@ import { DatabaseConfig } from "~/config";
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const dbConfig = configService.get("database");
-        return {
-          uri: dbConfig.uri,
-          useNewUrlParser: dbConfig.useNewUrlParser,
-          useUnifiedTopology: dbConfig.useUnifiedTopology,
-        };
+        return { ...dbConfig };
       },
     }),
   ],

@@ -1,18 +1,11 @@
-import { BaseRepository } from "./base.interface";
 import { Model } from "mongoose";
 
-export interface HasId {
-  id: string | number;
-}
-
-export abstract class BaseAbstractRepository<T extends HasId>
-  implements BaseRepository<T>
-{
-  constructor(protected model: Model<T>) {}
+export class BaseRepository<T> {
+  constructor(private readonly model: Model<T>) {}
 
   public async create(data: any): Promise<any> {
     const createModel = new this.model(data);
-    return createModel.save();
+    return await createModel.save();
   }
 
   public async findAll(

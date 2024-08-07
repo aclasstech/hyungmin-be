@@ -1,20 +1,12 @@
-import { PasswordUpdateDto, SignInDto } from "./dtos/auth.dto";
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { BusinessException } from "~/common/exceptions/biz.exception";
+import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { ErrorEnum } from "~/constants/error-code.constant";
 import { JwtPayload } from "./types/jwtPayload.type";
 import { JwtService } from "@nestjs/jwt";
-import { LoginLogService } from "../log/services/login-log.service";
-import { ROLE, STATUS } from "~/constants/enum.constant";
 import { Tokens } from "./types/tokens.type";
-import { verify } from "jsonwebtoken";
-import { hashPassword, verifyPassword } from "~/utils/function";
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly systemLogsService: LoginLogService,
     private jwtService: JwtService,
     private config: ConfigService
   ) {}

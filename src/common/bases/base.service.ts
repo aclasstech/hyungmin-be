@@ -1,10 +1,9 @@
-import { DeepPartial, FindManyOptions, FindOneOptions } from "typeorm";
-import { BaseService } from "./base-service.interface";
+import { FindOneOptions } from "typeorm";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { dateTime } from "src/common/decorators/date-time.decorator";
-import { BaseRepository } from "../repository/base.interface";
+import { BaseRepository } from "./base.repository";
 
-export abstract class BaseAbstractService<T> implements BaseService<T> {
+export class BaseService<T> {
   constructor(private readonly repository: BaseRepository<T>) {}
 
   public async create(data: any): Promise<T> {
@@ -19,8 +18,8 @@ export abstract class BaseAbstractService<T> implements BaseService<T> {
     return this.repository.findOne(options);
   }
 
-  public async findAll(options?: FindManyOptions<T>): Promise<any> {
-    const data = await this.repository.findAll(options);
+  public async findAll(filter: any = {}, options: any = {}): Promise<any> {
+    const data = await this.repository.findAll(filter, options);
     return { data: data };
   }
 
