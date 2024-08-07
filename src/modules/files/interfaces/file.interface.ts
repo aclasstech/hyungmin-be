@@ -1,4 +1,4 @@
-import { BaseInterfaceRepository } from "~/common/bases/repository/base.interface";
-import { FileEntity } from "../entities/file.entity";
+import { BaseRepository } from "~/common/bases/repository/base.interface";
+import { File } from "../schemas/file.schema";
 
-export type FileRepositoryInterface = BaseInterfaceRepository<FileEntity>;
+export type FileRepositoryInterface = BaseRepository<File>;

@@ -78,6 +78,7 @@
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",
     "fastify-multipart": "^5.4.0",
+    "glob": "^11.0.0",
     "google-auth-library": "^9.6.3",
     "googleapis": "^129.0.0",
     "helmet": "^7.1.0",

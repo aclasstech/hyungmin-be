@@ -1,5 +1,4 @@
-import { BaseInterfaceRepository } from "~/common/bases/repository/base.interface";
-import { LoginLogEntity } from "../entities/login-log.entity";
+import { BaseRepository } from "~/common/bases/repository/base.interface"
+import { LoginLog } from "../schemas/login-log.schema";
 
-export type SystemLogRepositoryInterface =
-  BaseInterfaceRepository<LoginLogEntity>;
+export type SystemLogRepositoryInterface = BaseRepository<LoginLog>;

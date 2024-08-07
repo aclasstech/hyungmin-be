@@ -1,4 +1,4 @@
-import { BaseInterfaceRepository } from "~/common/bases/repository/base.interface";
-import { RoleEntity } from "../entities/role.entity";
+import { BaseRepository } from "~/common/bases/repository/base.interface";
+import { Role } from "../schemas/role.schema";
 
-export type RoleRepositoryInterface = BaseInterfaceRepository<RoleEntity>;
+export type RoleRepositoryInterface = BaseRepository<Role>;

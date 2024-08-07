@@ -1,14 +1,10 @@
-import { DeepPartial, FindManyOptions, FindOneOptions } from "typeorm";
+import { DeepPartial } from "typeorm";
 
-import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
-
-export interface BaseInterfaceRepository<T> {
-  create(data: DeepPartial<T>): T;
-  save(data: DeepPartial<T>): Promise<T>;
-  find(options?: FindManyOptions<T>): Promise<any>;
-  remove(data: T): Promise<T>;
-  preload(entityLike: DeepPartial<T>): Promise<T>;
-  findOne(options: FindOneOptions<T>): Promise<T>;
-  update(options: any, data: QueryDeepPartialEntity<T>): Promise<any>;
-  count(options?: FindManyOptions<T>): Promise<number>;
+export interface BaseRepository<T> {
+  create(data: DeepPartial<T>): Promise<T>;
+  findAll(filter: any, options?: any): Promise<T>;
+  findOne(filter: any, options?: any): Promise<T>;
+  update(options: any, data: any): Promise<T>;
+  updateById(id: string, data: any): Promise<T>;
+  delete(id: string): Promise<T>;
 }

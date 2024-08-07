@@ -1,26 +1,14 @@
 import { DeepPartial, FindManyOptions, FindOneOptions } from "typeorm";
-
-import { BaseInterfaceRepository } from "../repository/base.interface";
-import { BaseInterfaceService } from "./base-service.interface";
+import { BaseService } from "./base-service.interface";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { dateTime } from "src/common/decorators/date-time.decorator";
+import { BaseRepository } from "../repository/base.interface";
 
-export abstract class BaseAbstractService<T>
-  implements BaseInterfaceService<T>
-{
-  constructor(private readonly repository: BaseInterfaceRepository<T>) {}
+export abstract class BaseAbstractService<T> implements BaseService<T> {
+  constructor(private readonly repository: BaseRepository<T>) {}
 
   public async create(data: any): Promise<T> {
-    const entity = this.repository.create(data);
-    return this.repository.save(entity);
-  }
-
-  async count(options?: FindManyOptions<T>): Promise<number> {
-    return this.repository.count(options);
-  }
-
-  public async save(data: DeepPartial<T>): Promise<T> {
-    return this.repository.save(data);
+    return this.repository.create(data);
   }
 
   public async findOneById(
@@ -31,32 +19,13 @@ export abstract class BaseAbstractService<T>
     return this.repository.findOne(options);
   }
 
-  public async findByCondition(filterCondition: FindOneOptions<T>): Promise<T> {
-    return this.repository.findOne(filterCondition);
-  }
-
   public async findAll(options?: FindManyOptions<T>): Promise<any> {
-    const data = await this.repository.find(options);
-    const count = await this.repository.count(options);
-    return { count: count, docs: data };
+    const data = await this.repository.findAll(options);
+    return { data: data };
   }
 
-  public async remove(id: string): Promise<void> {
-    const options: any = { where: { id: id } };
-    const entity = await this.findByCondition(options);
-    if (entity) {
-      await this.repository.remove(entity);
-    }
-  }
-
-  public async findWithRelations(relations: FindManyOptions<T>): Promise<any> {
-    const data = await this.repository.find(relations);
-    const count = await this.repository.count({ where: relations.where });
-    return { count: count, docs: data };
-  }
-
-  public async preload(entityLike: DeepPartial<T>): Promise<T> {
-    return this.repository.preload(entityLike);
+  public async delete(id: string): Promise<void> {
+    await this.repository.delete(id);
   }
 
   public async findOne(options: FindOneOptions<T>): Promise<T> {

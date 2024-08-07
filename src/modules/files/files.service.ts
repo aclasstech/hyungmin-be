@@ -11,18 +11,18 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FileEntity } from "./entities/file.entity";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { dateTimeZone } from "src/common/decorators/date-time.decorator";
 import { BaseAbstractService } from "~/common/bases/service/base-service.abstract";
 import { FileRepositoryInterface } from "./interfaces/file.interface";
 import { BusinessException } from "~/common/exceptions/biz.exception";
+import { File } from "./schemas/file.schema";
 
 @Injectable()
-export class FilesService extends BaseAbstractService<FileEntity> {
+export class FilesService extends BaseAbstractService<File> {
   private configS3: any;
   constructor(
-    @InjectRepository(FileEntity)
+    @InjectRepository(File)
     private readonly filesRepository: FileRepositoryInterface,
     private readonly configService: ConfigService,
     @Inject("S3Client")
@@ -56,7 +56,7 @@ export class FilesService extends BaseAbstractService<FileEntity> {
 
     await this.uploadInS3(keyword, contentType, files.buffer);
 
-    await this.filesRepository.save({
+    await this.filesRepository.create({
       fileName: keyword,
       originalname: files.originalname,
       fileUrl: "",
@@ -73,7 +73,7 @@ export class FilesService extends BaseAbstractService<FileEntity> {
     const command = await this.getFileInS3(fileName);
 
     const findImage = await this.filesRepository.findOne({
-      where: { fileName: fileName },
+      fileName: fileName,
     });
 
     if (!findImage) {
@@ -97,9 +97,7 @@ export class FilesService extends BaseAbstractService<FileEntity> {
         { fileUrl: url, expiredAt: newExpiredAt }
       );
     }
-    return await this.filesRepository.findOne({
-      where: { fileName: fileName },
-    });
+    return await this.filesRepository.findOne({ fileName: fileName });
   }
 
   async uploadInS3(key: string, contentType: string, body: any) {

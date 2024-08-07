@@ -1,4 +1,4 @@
-import { BaseInterfaceRepository } from "~/common/bases/repository/base.interface";
-import { AdmissionEntity } from "../entities/admission.entity";
+import { BaseRepository } from "~/common/bases/repository/base.interface";
+import { Admission } from "../schemas/admission.schema";
 
-export type AdmissionRepositoryInterface = BaseInterfaceRepository<AdmissionEntity>;
+export type AdmissionRepositoryInterface = BaseRepository<Admission>;

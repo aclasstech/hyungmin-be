@@ -1,7 +1,6 @@
 import * as dotenv from "dotenv";
 
-import { ConfigType, registerAs } from "@nestjs/config";
-import { DataSource, DataSourceOptions } from "typeorm";
+import { registerAs } from "@nestjs/config";
 import { env, envBoolean, envNumber } from "~/global/env";
 
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
@@ -30,28 +29,12 @@ const mongoUrl = buildMongoUrl(
   env("MONGODB_DATABASE")
 );
 
-const dataSourceOptions: DataSourceOptions = {
-  type: "mongodb",
-  url: mongoUrl,
-  synchronize: envBoolean("MONGODB_SYNCHRONIZE", false),
-  entities: [__dirname + "/modules/*/entities/*.entity{.ts,.js}"],
-  migrations: [__dirname + "/migrations/*{.ts,.js}"],
-};
 export const dbRegToken = "database";
-export const DatabaseConfig = registerAs(
-  dbRegToken,
-  (): DataSourceOptions => dataSourceOptions
-);
+export const DatabaseConfig = registerAs(dbRegToken, () => ({
+  uri: mongoUrl,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  synchronize: envBoolean("MONGODB_SYNCHRONIZE", false),
+}));
 
-export type IDatabaseConfig = ConfigType<typeof DatabaseConfig>;
-
-const dataSource = new DataSource(dataSourceOptions);
-dataSource.initialize()
-  .then(() => {
-    console.log("Data Source has been initialized!");
-  })
-  .catch((err) => {
-    console.error("Error during Data Source initialization:", err);
-  });
-
-export default dataSource;
+export type IDatabaseConfig = ReturnType<typeof DatabaseConfig>;

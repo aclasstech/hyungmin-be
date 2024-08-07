@@ -1,55 +1,47 @@
-import {
-  DeepPartial,
-  FindManyOptions,
-  FindOneOptions,
-  FindOptionsWhere,
-  Repository,
-  SelectQueryBuilder,
-} from "typeorm";
-import { BaseInterfaceRepository } from "./base.interface";
-import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
+import { BaseRepository } from "./base.interface";
+import { Model } from "mongoose";
 
 export interface HasId {
   id: string | number;
 }
 
 export abstract class BaseAbstractRepository<T extends HasId>
-  implements BaseInterfaceRepository<T>
+  implements BaseRepository<T>
 {
-  constructor(protected entity: Repository<T>) {}
+  constructor(protected model: Model<T>) {}
 
-  public async save(data: DeepPartial<T>): Promise<T> {
-    return await this.entity.save(data);
+  public async create(data: any): Promise<any> {
+    const createModel = new this.model(data);
+    return createModel.save();
   }
 
-  public create(data: DeepPartial<T>): T {
-    return this.entity.create(data);
-  }
-
-  public async find(options?: FindManyOptions<T>): Promise<any> {
-    return await this.entity.find(options);
-  }
-
-  public async remove(data: T): Promise<T> {
-    return await this.entity.remove(data);
-  }
-
-  public async preload(entityLike: DeepPartial<T>): Promise<T> {
-    return await this.entity.preload(entityLike);
-  }
-
-  public async findOne(options: FindOneOptions<T>): Promise<T> {
-    return this.entity.findOne(options);
-  }
-
-  public async update(
-    options: any,
-    data: QueryDeepPartialEntity<T>
+  public async findAll(
+    filter: any = {},
+    options: { populate?: string | string[] } = {}
   ): Promise<any> {
-    return await this.entity.update(options, data);
+    let query = this.model.find(filter);
+    if (options.populate) query = query.populate(options.populate);
+    return await query.exec();
   }
 
-  async count(options?: FindManyOptions<T>): Promise<number> {
-    return this.entity.count(options);
+  public async findOne(
+    filter: any = {},
+    options: { populate?: string | string[] } = {}
+  ): Promise<any> {
+    let query = this.model.findOne(filter);
+    if (options.populate) query = query.populate(options.populate);
+    return await query.exec();
+  }
+
+  public async update(options: any, data: any): Promise<any> {
+    return this.model.updateOne(options, data, { new: true }).exec();
+  }
+
+  public async updateById(id: string, data: any): Promise<any> {
+    return this.model.findByIdAndUpdate(id, data, { new: true }).exec();
+  }
+
+  public async delete(id: string): Promise<any> {
+    return this.model.findByIdAndDelete(id).exec();
   }
 }

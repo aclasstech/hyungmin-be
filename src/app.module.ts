@@ -35,11 +35,11 @@ import { AdmissionModule } from "./modules/admission/admission.module";
     SharedModule,
     DatabaseModule,
     CommonModule,
-    AuthModule,
-    RolesModule,
-    LoggerModule,
-    LogModule,
-    FilesModule,
+    // AuthModule,
+    // RolesModule,
+    // LoggerModule,
+    // LogModule,
+    // FilesModule,
     AdmissionModule
   ],
   providers: [

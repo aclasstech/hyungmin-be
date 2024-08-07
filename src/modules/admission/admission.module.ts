@@ -1,15 +1,17 @@
 import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { AdmissionEntity } from "./entities/admission.entity";
 import { AdmissionController } from "./admission.controller";
 import { AdmissionService } from "./admission.service";
+import { MongooseModule } from "@nestjs/mongoose";
+import { Admission, AdmissionSchema } from "./schemas/admission.schema";
 
 @Module({
-    imports: [
-      TypeOrmModule.forFeature([AdmissionEntity]),
-    ],
-    controllers: [AdmissionController],
-    providers: [AdmissionService],
-    exports: [AdmissionService],
-  })
-  export class AdmissionModule {}
+  imports: [
+    MongooseModule.forFeature([
+      { name: Admission.name, schema: AdmissionSchema },
+    ]),
+  ],
+  controllers: [AdmissionController],
+  providers: [AdmissionService],
+  exports: [AdmissionService],
+})
+export class AdmissionModule {}
