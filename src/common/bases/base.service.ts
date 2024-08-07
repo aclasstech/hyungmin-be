@@ -1,75 +1,48 @@
-import { FindOneOptions } from "typeorm";
-import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
-import { dateTime } from "src/common/decorators/date-time.decorator";
 import { BaseRepository } from "./base.repository";
+import { Injectable } from "@nestjs/common";
+import { Document } from "mongoose";
+import { BaseResponse } from "./base.response";
 
-export class BaseService<T> {
-  constructor(private readonly repository: BaseRepository<T>) {}
+@Injectable()
+export abstract class BaseService<T extends Document> {
+  private response;
 
-  public async create(data: any): Promise<T> {
-    return this.repository.create(data);
+  constructor(private readonly repository: BaseRepository<T>) {
+    this.response = new BaseResponse();
   }
 
-  public async findOneById(
-    id: string | number,
-    relation?: string[]
+  public async save(data: any): Promise<T> {
+    const result = await this.repository.create(data);
+    return await this.response.get(result);
+  }
+
+  public async find(filter: any = {}, options: any = {}): Promise<any> {
+    const result = await this.repository.find(filter, options);
+    return await this.response.get(result);
+  }
+
+  public async findOne(
+    filter: any = {},
+    options: { populate?: string | string[] } = {}
   ): Promise<T> {
-    const options: any = { where: { id: id }, relations: relation || [] };
-    return this.repository.findOne(options);
+    let query = await this.repository.findOne(filter);
+    if (options.populate) query = query.populate(options.populate);
+    const result = await query.exec();
+    return await this.response.get(result);
   }
 
-  public async findAll(filter: any = {}, options: any = {}): Promise<any> {
-    const data = await this.repository.findAll(filter, options);
-    return { data: data };
+  public async update(options: any, data: any): Promise<any> {
+    const result = await this.repository.update(options, data);
+    return await this.response.get(result);
   }
 
-  public async delete(id: string): Promise<void> {
+  public async updateById(id: string, data: any): Promise<any> {
+    const result = await this.repository.updateById(id, data);
+    return await this.response.get(result);
+  }
+
+  public async delete(id: string): Promise<any> {
     await this.repository.delete(id);
-  }
-
-  public async findOne(options: FindOneOptions<T>): Promise<T> {
-    return this.repository.findOne(options);
-  }
-
-  public async updateById(id: string | number, data: any): Promise<any> {
-    await this.repository.update(id, { ...data, updatedAt: dateTime });
-    return await this.findOneById(id);
-  }
-
-  public async updateByOption(option: any, data: any): Promise<any> {
-    await this.repository.update(option, { ...data, updatedAt: dateTime });
-    return this.findOneById(option);
-  }
-
-  public async deleteById(
-    id: string | number,
-    data: QueryDeepPartialEntity<T>
-  ): Promise<any> {
-    await this.updateById(id, data);
-    return await this.findOneById(id);
-  }
-
-  public async deleteByOption(
-    option: any,
-    data: QueryDeepPartialEntity<T>
-  ): Promise<any> {
-    await this.updateByOption(option, { ...data, updatedAt: dateTime });
-    return await this.findOneById(option);
-  }
-
-  public async restoreById(
-    id: string | number,
-    data: QueryDeepPartialEntity<T>
-  ): Promise<any> {
-    await this.updateById(id, data);
-    return await this.findOneById(id);
-  }
-
-  public async restoreByOption(
-    option: any,
-    data: QueryDeepPartialEntity<T>
-  ): Promise<any> {
-    await this.updateByOption(option, { ...data, updatedAt: dateTime });
-    return await this.findOneById(option);
+    return { message: `ID ${id} deleted succesfully` };
   }
 }

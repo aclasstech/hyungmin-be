@@ -2,6 +2,9 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { CommonSchema } from "~/common/entity/common.entity";
 import { Term } from "./term.schema";
 import { ApiProperty } from "@nestjs/swagger";
+import { Document } from "mongoose";
+
+export type AdmissionDocument = Admission & Document;
 
 @Schema()
 export class Admission extends CommonSchema {

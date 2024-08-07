@@ -1,6 +1,6 @@
-import { Model } from "mongoose";
+import { Document, Model } from "mongoose";
 
-export class BaseRepository<T> {
+export abstract class BaseRepository<T extends Document> {
   constructor(private readonly model: Model<T>) {}
 
   public async create(data: any): Promise<any> {
@@ -8,7 +8,7 @@ export class BaseRepository<T> {
     return await createModel.save();
   }
 
-  public async findAll(
+  public async find(
     filter: any = {},
     options: { populate?: string | string[] } = {}
   ): Promise<any> {

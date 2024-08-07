@@ -1,24 +1,26 @@
 import { Injectable } from "@nestjs/common";
 import { CreateAdmissionDto } from "./dto/admission.dto";
-import { AdmissionRepository } from "./repositories/admission.repository";
 import { InjectModel } from "@nestjs/mongoose";
-import { Admission } from "./schemas/admission.schema";
+import { Admission, AdmissionDocument } from "./schemas/admission.schema";
 import { BaseService } from "~/common/bases/base.service";
+import { BaseRepository } from "~/common/bases/base.repository";
 
 @Injectable()
-export class AdmissionService extends BaseService<Admission> {
+export class AdmissionService extends BaseService<AdmissionDocument> {
   constructor(
     @InjectModel(Admission.name)
-    private readonly admissionRepository: AdmissionRepository
+    private readonly admissionRepository: BaseRepository<AdmissionDocument>
   ) {
     super(admissionRepository);
   }
 
-  async getAdmission() {
-    return await this.admissionRepository.findAll({});
+  async getAdmission(): Promise<Admission[]> {
+    return await this.find({});
   }
 
-  async create(createAdmissionDto: CreateAdmissionDto): Promise<Admission> {
-    return await this.admissionRepository.create(createAdmissionDto);
+  async createNewAdmission(
+    createAdmissionDto: CreateAdmissionDto
+  ): Promise<Admission> {
+    return await this.save(createAdmissionDto);
   }
 }
